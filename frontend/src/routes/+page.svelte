@@ -31,7 +31,7 @@
         <!-- Menu Desktop -->
         <nav class="hidden md:flex items-center space-x-6 text-base font-semibold text-gray-800">
             <a href="/promo" class="hover:text-blue-600">Promo Kelas</a>
-            <a href="/kelas" class="hover:text-blue-600">Kelas Online</a>
+            <a href="/project-baru-pzn/kelas" class="hover:text-blue-600">Kelas Online</a>
 
             <!-- Dropdown Komunitas -->
             <div class="relative">
@@ -79,7 +79,7 @@
     {#if isMobileMenuOpen}
         <div class="md:hidden px-4 pb-4 space-y-2 text-base font-medium text-gray-800 bg-white shadow">
             <a href="/promo" class="block py-1 hover:text-blue-600">Promo Kelas Udemy</a>
-            <a href="/kelas" class="block py-1 hover:text-blue-600">Kelas Online</a>
+            <a href="/project-baru-pzn/kelas" class="block py-1 hover:text-blue-600">Kelas Online</a>
             <details>
                 <summary class="cursor-pointer py-1 hover:text-blue-600">Komunitas</summary>
                 <div class="pl-4 space-y-1">
@@ -106,7 +106,7 @@
         <p class="text-xl text-white max-w-2xl mx-auto mb-8">
             Tempat Belajar untuk Menjadi Software Development Expert yang Zaman Now Banget!
         </p>
-        <a href="/kelas" class="px-6 py-3 bg-white text-gray-900 text-lg font-bold rounded-xl hover:bg-gray-200">
+        <a href="/project-baru-pzn/kelas" class="px-6 py-3 bg-white text-gray-900 text-lg font-bold rounded-xl hover:bg-gray-200">
             Gabung Kelas Online!
         </a>
     </div>

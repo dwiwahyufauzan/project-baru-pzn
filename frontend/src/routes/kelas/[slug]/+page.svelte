@@ -81,9 +81,9 @@
 
         <!-- Desktop Navigation -->
         <nav class="hidden md:flex items-center space-x-6 text-base font-medium text-white">
-            <a href="/kelas" class="hover:text-blue-300">Browse Products</a>
-            <a href="/login" class="hover:text-blue-300">Log In</a>
-            <a href="/signup" target="_blank" class="bg-white hover:bg-gray-200 text-blue-800 border border-white rounded px-3 py-1 inline-block">
+            <a href="/project-baru-pzn/kelas" class="hover:text-blue-300">Browse Products</a>
+            <a href="/project-baru-pzn/login" class="hover:text-blue-300">Log In</a>
+            <a href="/project-baru-pzn/signup" target="_blank" class="bg-white hover:bg-gray-200 text-blue-800 border border-white rounded px-3 py-1 inline-block">
                 Sign Up
             </a>
         </nav>
@@ -92,9 +92,9 @@
     <!-- Mobile Navigation -->
     {#if isMobileMenuOpen}
         <div class="md:hidden px-4 pt-2 pb-4 bg-white shadow space-y-2 text-base font-medium text-gray-800 transition-all duration-200">
-            <a href="/kelas" class="block py-2 px-2 rounded hover:bg-gray-100">Browse Products</a>
-            <a href="/login" class="block py-2 px-2 rounded hover:bg-gray-100">Log In</a>
-            <a href="/signup" target="_blank" class="block py-2 px-2 rounded hover:bg-gray-100">Sign Up</a>
+            <a href="/project-baru-pzn/kelas" class="block py-2 px-2 rounded hover:bg-gray-100">Browse Products</a>
+            <a href="/project-baru-pzn/login" class="block py-2 px-2 rounded hover:bg-gray-100">Log In</a>
+            <a href="/project-baru-pzn/signup" target="_blank" class="block py-2 px-2 rounded hover:bg-gray-100">Sign Up</a>
         </div>
     {/if}
 </header>

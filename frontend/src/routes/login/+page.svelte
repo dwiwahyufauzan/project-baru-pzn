@@ -6,7 +6,7 @@
 <!-- HEADER NAVBAR -->
 <header class="bg-blue-900/85 shadow-md sticky top-0 z-50">
     <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="/kelas" class="text-2xl font-bold text-white transition">Programmer Zaman Now</a>
+        <a href="/project-baru-pzn/kelas" class="text-2xl font-bold text-white transition">Programmer Zaman Now</a>
     </nav>
 </header>
 
