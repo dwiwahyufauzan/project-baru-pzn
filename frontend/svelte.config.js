@@ -11,7 +11,6 @@ const config = {
 		}),
 		paths: {
 			base: '/project-baru-pzn',
-			assets: dev ? '' : 'https://dwiwahyufauzan.github.io/project-baru-pzn'
 		},
 		prerender: {
 			entries: ['*']
