@@ -1,1 +1,0 @@
-import{c as i,a as s}from"../chunks/CHLfeud2.js";import{h as f,E as p,w as c,e as m,W as d,i as h,y as l,f as _}from"../chunks/CAVeIInx.js";/* empty css                */function u(t,e,...a){var n=t,o=m,r;f(()=>{o!==(o=e())&&(r&&(d(r),r=null),r=c(()=>o(n,...a)))},p),h&&(n=l)}function T(t,e){var a=i(),n=_(a);u(n,()=>e.children),s(t,a)}export{T as component};
