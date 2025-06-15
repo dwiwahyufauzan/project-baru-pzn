@@ -1,0 +1,1 @@
+import{c as s,a as i}from"../chunks/CMstmOUD.js";import{o as f,E as p,C as c,G as m,_ as d,q as _,F as h,f as l}from"../chunks/DWtiGtaS.js";/* empty css                */function u(o,t,...a){var n=o,e=m,r;f(()=>{e!==(e=t())&&(r&&(d(r),r=null),r=c(()=>e(n,...a)))},p),_&&(n=h)}function F(o,t){var a=s(),n=l(a);u(n,()=>t.children),i(o,a)}export{F as component};
