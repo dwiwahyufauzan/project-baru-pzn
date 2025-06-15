@@ -1,8 +1,31 @@
-<script>
+<script lang="ts">
     import '../../../app.css'
     import { page } from '$app/stores';
     let openMenu = '';
+    let isLoggedIn = true;
     let isMobileMenuOpen = false;
+    let userName = 'Sun Jinwoo';
+    let isDropdownOpen = false;
+
+    function toggleDropdown() {
+        isDropdownOpen = !isDropdownOpen;
+    }
+
+    function clickOutside(node: HTMLElement) {
+        const handleClick = (event: MouseEvent) => {
+            if (!node.contains(event.target as Node)) {
+                isDropdownOpen = false;
+            }
+        };
+
+        document.addEventListener('click', handleClick, true);
+
+        return {
+            destroy() {
+                document.removeEventListener('click', handleClick, true);
+            }
+        };
+    }
 
     const produk = [
         {
@@ -93,10 +116,10 @@
     <div class="container mx-auto px-4 sm:px-8 py-4 flex items-center justify-between">
         <!-- Logo -->
         <div class="flex items-center space-x-2">
-            <span class="text-lg font-semibold text-white">Programmer Zaman Now</span>
+            <a href="/project-baru-pzn/dashboard" class="text-lg font-semibold text-white">Programmer Zaman Now</a>
         </div>
 
-        <!-- Hamburger Menu -->
+        <!-- Mobile toggle -->
         <button
                 class="md:hidden text-white focus:outline-none"
                 on:click={() => (isMobileMenuOpen = !isMobileMenuOpen)}
@@ -108,29 +131,57 @@
             </svg>
         </button>
 
-        <!-- Desktop Navigation -->
+        <!-- Desktop menu -->
         <nav class="hidden md:flex items-center space-x-6 text-base font-medium text-white">
-            <a href="/project-baru-pzn/kelas" class="hover:text-blue-300">Browse Products</a>
-            <a href="/project-baru-pzn/login" class="hover:text-blue-300">Log In</a>
-            <a href="/project-baru-pzn/signup" class="bg-white hover:bg-gray-200 text-blue-800 border border-white rounded px-3 py-3 inline-block">
-                Sign Up
-            </a>
+            <a href="/project-baru-pzn/dashboard    " class="hover:text-blue-300">Browse Products</a>
+
+            {#if isLoggedIn}
+                <div class="relative">
+                    <!-- User Icon -->
+                    <button on:click={toggleDropdown} class="flex items-center bg-white rounded-full">
+                        <img src="https://cdn-icons-png.flaticon.com/128/456/456212.png" alt="User" class="w-10 h-10 rounded-full border-2 border-white" />
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div use:clickOutside class={`absolute right-0 mt-3 w-60 bg-white rounded-xl shadow-lg transform transition-all duration-300 ease-in-out origin-top-right ${isDropdownOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'}`}>
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <p class="text-base font-semibold text-gray-800">Hi, {userName}</p>
+                        </div>
+                        <a href="/project-baru-pzn/profile"
+                           class="block px-6 py-3 text-base hover:bg-gray-100 text-gray-700 font-medium">Edit Profil</a>
+                        <button
+                                class="block w-full text-left px-6 py-3 text-base hover:bg-gray-100 text-red-600 font-medium">Logout</button>
+                    </div>
+                </div>
+            {:else}
+                <a href="/project-baru-pzn/login" class="hover:text-blue-300">Log In</a>
+                <a href="/project-baru-pzn/signup"
+                   class="bg-white hover:bg-gray-200 text-blue-800 border border-white rounded px-3 py-2">
+                    Sign Up
+                </a>
+            {/if}
         </nav>
     </div>
 
-    <!-- Mobile Navigation (animated) -->
-    <div
-            class={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-			isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-		}`}
-    >
+    <!-- Mobile Menu -->
+    <div class={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+		isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+	}`}>
         <div class="px-4 pt-2 pb-4 bg-blue-900 shadow space-y-2 text-base font-medium text-white">
             <a href="/project-baru-pzn/kelas" class="block py-2 px-2 rounded hover:bg-blue-800">Browse Products</a>
-            <a href="/project-baru-pzn/login" class="block py-2 px-2 rounded hover:bg-blue-800">Log In</a>
-            <a href="/project-baru-pzn/signup" class="block py-2 px-2 rounded hover:bg-blue-800">Sign Up</a>
+
+            {#if isLoggedIn}
+                <span class="block px-2">Hi, {userName}</span>
+                <a href="/project-baru-pzn/profile" class="block py-2 px-2 hover:bg-blue-800">Edit Profil</a>
+                <button class="block w-full text-left py-2 px-2 hover:bg-blue-800">Logout</button>
+            {:else}
+                <a href="/project-baru-pzn/login" class="block py-2 px-2 rounded hover:bg-blue-800">Log In</a>
+                <a href="/project-baru-pzn/signup" class="block py-2 px-2 rounded hover:bg-blue-800">Sign Up</a>
+            {/if}
         </div>
     </div>
 </header>
+
 
 {#if $item}
     <main class="max-w-6xl mx-auto px-4 py-10 space-y-12">

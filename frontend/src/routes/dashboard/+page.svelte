@@ -1,12 +1,36 @@
 <script lang="ts">
     import '../../app.css';
-    import { goto } from "$app/navigation";
 
     let isMobileMenuOpen = false;
+    let isLoggedIn = true;
+    let isDropdownOpen = false;
+    let userName = 'Sun Jinwoo';
     let search = "";
     let sort = "Name (A-Z)";
     let kategoriDipilih = "null";
     let isKategoriTerbuka = false;
+    let produkFiltered = [];
+
+    function toggleDropdown() {
+        isDropdownOpen = !isDropdownOpen;
+    }
+
+    function clickOutside(node: HTMLElement) {
+        const handleClick = (event: MouseEvent) => {
+            if (!node.contains(event.target as Node)) {
+                isDropdownOpen = false;
+            }
+        };
+
+        document.addEventListener('click', handleClick, true);
+
+        return {
+            destroy() {
+                document.removeEventListener('click', handleClick, true);
+            }
+        };
+    }
+
 
     let kategoriList = [
         "Cloud", "Machine Learning", "AI", "UI/UX", "Design Patterns",
@@ -26,7 +50,8 @@
             deskripsi: "Roadmap Terlengkap Menjadi Programmer Java untuk Pemula",
             instruktur: "Eko Kurniawan Khannedy",
             harga: "Rp75.000",
-            thumbnail: "https://www.paigeniedringhaus.com/static/13beeafbbd98000e9dda382fa8733bed/8b983/java-logo-hero.webp"
+            thumbnail: "https://www.paigeniedringhaus.com/static/13beeafbbd98000e9dda382fa8733bed/8b983/java-logo-hero.webp",
+            sudahDibeli: true
         },
         {
             slug: "php",
@@ -66,7 +91,8 @@
             deskripsi: "Pelajari standar pembuatan API dengan REST di backend",
             instruktur: "Sun Jinwoo",
             harga: "Rp85.000",
-            thumbnail: "https://logowik.com/content/uploads/images/nodejs.jpg"
+            thumbnail: "https://logowik.com/content/uploads/images/nodejs.jpg",
+            sudahDibeli: true
         },
         {
             slug: "bunjs",
@@ -90,18 +116,44 @@
             deskripsi: "Pelajari Laravel untuk membangun aplikasi web modern dengan PHP.",
             instruktur: "Sun Jinwoo",
             harga: "Rp80.000",
-            thumbnail: "https://download.logo.wine/logo/Laravel/Laravel-Logo.wine.png"
+            thumbnail: "https://download.logo.wine/logo/Laravel/Laravel-Logo.wine.png",
+            sudahDibeli: true
         }
     ];
+
+
+    $: produkFiltered = produk
+        .filter(p =>
+            p.judul.toLowerCase().includes(search.toLowerCase()) &&
+            (kategoriDipilih === "null" || p.judul.toLowerCase().includes(kategoriDipilih.toLowerCase()))
+        )
+
+        .filter(p => p.judul.toLowerCase().includes(search.toLowerCase()))
+        .sort((a, b) => {
+            if (sort === "Name (A-Z)") return a.judul.localeCompare(b.judul);
+            if (sort === "Name (Z-A)") return b.judul.localeCompare(a.judul);
+            if (sort === "Price (Low to High)") return parseInt(a.harga.replace(/\D/g, '')) - parseInt(b.harga.replace(/\D/g, ''));
+            if (sort === "Price (High to Low)") return parseInt(b.harga.replace(/\D/g, '')) - parseInt(a.harga.replace(/\D/g, ''));
+            return 0;
+        });
+
+
 </script>
+
+<svelte:head>
+    <title>Browse Products - Programmer Zaman Now</title>
+</svelte:head>
+
 
 <!-- HEADER -->
 <header class="bg-blue-900 shadow sticky top-0 z-50">
     <div class="container mx-auto px-4 sm:px-8 py-4 flex items-center justify-between">
+        <!-- Logo -->
         <div class="flex items-center space-x-2">
-            <span class="text-lg font-semibold text-white">Programmer Zaman Now</span>
+            <a href="/project-baru-pzn/dashboard" class="text-lg font-semibold text-white">Programmer Zaman Now</a>
         </div>
 
+        <!-- Mobile toggle -->
         <button
                 class="md:hidden text-white focus:outline-none"
                 on:click={() => (isMobileMenuOpen = !isMobileMenuOpen)}
@@ -113,22 +165,55 @@
             </svg>
         </button>
 
+        <!-- Desktop menu -->
         <nav class="hidden md:flex items-center space-x-6 text-base font-medium text-white">
-            <a href="/project-baru-pzn/kelas" class="hover:text-blue-300">Browse Products</a>
-            <a href="/project-baru-pzn/login" class="hover:text-blue-300">Log In</a>
-            <a href="/project-baru-pzn/signup" class="bg-white hover:bg-gray-200 text-blue-800 border border-white rounded px-3 py-3 inline-block">
-                Sign Up
-            </a>
+            <a href="/project-baru-pzn/dashboard    " class="hover:text-blue-300">Browse Products</a>
+
+            {#if isLoggedIn}
+                <div class="relative">
+                    <!-- User Icon -->
+                    <button on:click={toggleDropdown} class="flex items-center bg-white rounded-full">
+                        <img src="https://cdn-icons-png.flaticon.com/128/456/456212.png" alt="User" class="w-10 h-10 rounded-full border-2 border-white" />
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div use:clickOutside class={`absolute right-0 mt-3 w-60 bg-white rounded-xl shadow-lg transform transition-all duration-300 ease-in-out origin-top-right ${isDropdownOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'}`}>
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <p class="text-base font-semibold text-gray-800">Hi, {userName}</p>
+                        </div>
+                        <a href="/project-baru-pzn/profile"
+                           class="block px-6 py-3 text-base hover:bg-gray-100 text-gray-700 font-medium">Edit Profil</a>
+                        <button on:click={() => {isLoggedIn = false; window.location.href = "/project-baru-pzn/login";}}
+                                class="block w-full text-left px-6 py-3 text-base hover:bg-gray-100 text-red-600 font-medium">
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            {:else}
+                <a href="/project-baru-pzn/login" class="hover:text-blue-300">Log In</a>
+                <a href="/project-baru-pzn/signup"
+                   class="bg-white hover:bg-gray-200 text-blue-800 border border-white rounded px-3 py-2">
+                    Sign Up
+                </a>
+            {/if}
         </nav>
     </div>
 
+    <!-- Mobile Menu -->
     <div class={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-        isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-    }`}>
+		isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+	}`}>
         <div class="px-4 pt-2 pb-4 bg-blue-900 shadow space-y-2 text-base font-medium text-white">
-            <a href="/project-baru-pzn/kelas" class="block py-2 px-2 rounded hover:bg-blue-800">Browse Products</a>
-            <a href="/project-baru-pzn/login" class="block py-2 px-2 rounded hover:bg-blue-800">Log In</a>
-            <a href="/project-baru-pzn/signup" class="block py-2 px-2 rounded hover:bg-blue-800">Sign Up</a>
+            <a href="/project-baru-pzn/dasboard" class="block py-2 px-2 rounded hover:bg-blue-800">Browse Products</a>
+
+            {#if isLoggedIn}
+                <span class="block px-2">Hi, {userName}</span>
+                <a href="/project-baru-pzn/profile" class="block py-2 px-2 hover:bg-blue-800">Edit Profil</a>
+                <button class="block w-full text-left py-2 px-2 hover:bg-blue-800">Logout</button>
+            {:else}
+                <a href="/project-baru-pzn/login" class="block py-2 px-2 rounded hover:bg-blue-800">Log In</a>
+                <a href="/project-baru-pzn/signup" class="block py-2 px-2 rounded hover:bg-blue-800">Sign Up</a>
+            {/if}
         </div>
     </div>
 </header>
@@ -207,9 +292,16 @@
                     <h4 class="font-semibold text-lg mb-2">{item.judul}</h4>
                     <p class="text-base text-gray-600 mb-1">{item.deskripsi}</p>
                     <p class="text-sm text-gray-400 mb-5">Course • By {item.instruktur}</p>
-                    <a href={`/project-baru-pzn/kelas/${item.slug}`} class="block w-full sm:w-auto text-base text-center border border-red-500 rounded-md py-3 px-4 text-gray-800 hover:bg-red-50 font-medium">
-                        {item.harga}
-                    </a>
+
+                    {#if item.sudahDibeli}
+                        <a href={`/project-baru-pzn/dashboard/content/${item.slug}`} class="block w-full sm:w-auto text-base text-center bg-red-600 border border-red-500 rounded-md py-3 px-4 text-white font-semibold hover:bg-red-700">
+                            View Content
+                        </a>
+                    {:else}
+                        <a href={`/project-baru-pzn/dashboard/${item.slug}`} class="block w-full sm:w-auto text-base text-center border border-red-500 rounded-md py-3 px-4 text-gray-800 hover:bg-red-50 font-medium">
+                            {item.harga}
+                        </a>
+                    {/if}
                 </div>
             </article>
         {/each}

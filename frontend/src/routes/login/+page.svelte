@@ -1,6 +1,12 @@
 <script>
+    import { goto } from '$app/navigation';
+
     let email = '';
     let password = '';
+
+    const handleLogin = () => {
+        goto('/project-baru-pzn/dashboard');
+    };
 </script>
 
 <!-- HEADER NAVBAR -->
@@ -23,7 +29,7 @@
 
         <h2 class="text-center text-3xl font-medium text-gray-900">Login</h2>
 
-        <form class="space-y-5" on:submit|preventDefault={() => alert(`Login: ${email}`)}>
+        <form class="space-y-5" on:submit|preventDefault={handleLogin}>
             <input
                     type="email"
                     placeholder="Email"
@@ -69,7 +75,6 @@
         </div>
     </div>
 
-    <!-- Social media section -->
     <div class="container mx-auto px-16 mt-4 flex space-x-8 text-base text-gray-300">
         <a href="https://instagram.com/yourprofile" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 transition">
             Instagram
@@ -84,5 +89,4 @@
             Email
         </a>
     </div>
-
 </footer>

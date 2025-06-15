@@ -181,8 +181,5 @@
         <a href="https://t.me/yourprofile" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 transition">
             Telegram
         </a>
-        <a href="mailto:email@domain.com" class="hover:text-blue-400 transition">
-            Email
-        </a>
     </div>
 </footer>

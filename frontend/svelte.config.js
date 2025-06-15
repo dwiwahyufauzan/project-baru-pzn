@@ -3,18 +3,20 @@ import preprocess from 'svelte-preprocess';
 
 const dev = process.env.NODE_ENV === 'development';
 
-export default {
+const config = {
 	preprocess: preprocess(),
 	kit: {
 		adapter: adapter({
 			fallback: 'index.html'
 		}),
 		paths: {
-			base: dev ? '' : '/project-baru-pzn',
-			assets: dev ? '' : '/project-baru-pzn'
+			base: '/project-baru-pzn',
+			assets: dev ? '' : 'https://dwiwahyufauzan.github.io/project-baru-pzn'
 		},
 		prerender: {
 			entries: ['*']
 		}
 	}
 };
+
+export default config;
