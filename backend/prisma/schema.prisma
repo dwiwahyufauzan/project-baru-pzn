@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL") // pastikan .env kamu punya variabel ini
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  name     String
+  password String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relasi nanti bisa ditambahkan jika user punya enrollment ke kelas
+}
+
+model Kelas {
+  id        Int      @id @default(autoincrement())
+  judul     String
+  deskripsi String
+  thumbnail String
+  slug      String   @unique
+  kategori  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lessons   Lesson[]
+}
+
+model Lesson {
+  id        Int      @id @default(autoincrement())
+  title     String
+  type      String   // 'video', 'document', atau 'link'
+  duration  String?  // durasi video, jika ada
+  done      Boolean  @default(false)
+  kelas     Kelas    @relation(fields: [kelasId], references: [id])
+  kelasId   Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

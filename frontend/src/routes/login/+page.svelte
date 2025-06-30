@@ -1,11 +1,40 @@
-<script>
+<script lang="ts">
     import { goto } from '$app/navigation';
 
     let email = '';
     let password = '';
+    let error = '';
+    let loading = false;
 
-    const handleLogin = () => {
-        goto('/project-baru-pzn/dashboard');
+    const handleLogin = async () => {
+        error = '';
+        loading = true;
+
+        try {
+            const res = await fetch('http://localhost:3000/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                error = data?.message || data?.errors || 'Login gagal';
+                return;
+            }
+
+            // Simpan token ke localStorage
+            localStorage.setItem('token', data.token);
+
+            // Arahkan ke halaman profile
+            goto('/project-baru-pzn/dashboard');
+        } catch (err) {
+            console.error(err);
+            error = 'Terjadi kesalahan saat login.';
+        } finally {
+            loading = false;
+        }
     };
 </script>
 
@@ -29,64 +58,40 @@
 
         <h2 class="text-center text-3xl font-medium text-gray-900">Login</h2>
 
+        {#if error}
+            <p class="text-red-600 text-sm text-center">{error}</p>
+        {/if}
+
         <form class="space-y-5" on:submit|preventDefault={handleLogin}>
             <input
                     type="email"
                     placeholder="Email"
                     bind:value={email}
-                    class="appearance-none rounded-md relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    class="appearance-none rounded-md block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                     required
             />
             <input
                     type="password"
                     placeholder="Password"
                     bind:value={password}
-                    class="appearance-none rounded-md relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    class="appearance-none rounded-md block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                     required
                     minlength="6"
             />
             <button
                     type="submit"
-                    class="w-full flex justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-semibold transition"
+                    class="w-full flex justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-semibold transition disabled:opacity-50"
+                    disabled={loading}
             >
-                Masuk
+                {loading ? 'Memproses...' : 'Masuk'}
             </button>
         </form>
 
         <p class="text-center text-sm text-gray-600">
             Belum punya akun?
-            <a href="/signup" class="font-medium text-blue-600 hover:text-blue-700 transition underline">
+            <a href="/project-baru-pzn/signup" class="font-medium text-blue-600 hover:text-blue-700 transition underline">
                 Daftar
             </a>
         </p>
     </div>
 </section>
-
-<!-- FOOTER -->
-<footer class="bg-gray-600 border-t border-gray-200 py-8 mt-20 text-white">
-    <div class="container mx-auto px-16 flex flex-col md:flex-row justify-between items-center">
-        <div class="mb-4 md:mb-0 text-base">
-            &copy; <span id="year"></span> <strong>Programmer Zaman Now</strong>
-        </div>
-        <div class="flex space-x-6 text-base">
-            <a href="#" class="hover:text-blue-500 transition">Tentang</a>
-            <a href="#" class="hover:text-blue-500 transition">Kontak</a>
-            <a href="#" class="hover:text-blue-500 transition">Privacy Policy</a>
-        </div>
-    </div>
-
-    <div class="container mx-auto px-16 mt-4 flex space-x-8 text-base text-gray-300">
-        <a href="https://instagram.com/yourprofile" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 transition">
-            Instagram
-        </a>
-        <a href="https://facebook.com/yourprofile" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 transition">
-            Facebook
-        </a>
-        <a href="https://t.me/yourprofile" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 transition">
-            Telegram
-        </a>
-        <a href="mailto:email@domain.com" class="hover:text-blue-400 transition">
-            Email
-        </a>
-    </div>
-</footer>

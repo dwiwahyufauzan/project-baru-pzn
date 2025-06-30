@@ -1,34 +1,61 @@
 <script lang="ts">
     import '../../app.css';
+    import { onMount } from 'svelte';
+    import { goto } from '$app/navigation';
+    import clickOutside from '$lib/clickOutside';
+
 
     let isMobileMenuOpen = false;
     let isLoggedIn = true;
     let isDropdownOpen = false;
-    let userName = 'Sun Jinwoo';
+    let user: { id: number; name: string; email: string } | null = null;
     let search = "";
     let sort = "Name (A-Z)";
     let kategoriDipilih = "null";
     let isKategoriTerbuka = false;
     let produkFiltered = [];
+    let loading = true;
+    let error = '';
+
+    onMount(async () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            goto('/project-baru-pzn/login');
+            return;
+        }
+
+        try {
+            const res = await fetch('http://localhost:3000/auth/me', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                error = data.message || 'Gagal mengambil data user';
+                localStorage.removeItem('token');
+                goto('/project-baru-pzn/login');
+                return;
+            }
+
+            user = data.user;
+        } catch (e) {
+            console.error(e);
+            error = 'Terjadi kesalahan saat mengambil data.';
+        } finally {
+            loading = false;
+        }
+    });
+
+    function logout() {
+        localStorage.removeItem('token');
+        goto('/project-baru-pzn/login');
+    }
+
 
     function toggleDropdown() {
         isDropdownOpen = !isDropdownOpen;
-    }
-
-    function clickOutside(node: HTMLElement) {
-        const handleClick = (event: MouseEvent) => {
-            if (!node.contains(event.target as Node)) {
-                isDropdownOpen = false;
-            }
-        };
-
-        document.addEventListener('click', handleClick, true);
-
-        return {
-            destroy() {
-                document.removeEventListener('click', handleClick, true);
-            }
-        };
     }
 
 
@@ -136,6 +163,7 @@
             if (sort === "Price (High to Low)") return parseInt(b.harga.replace(/\D/g, '')) - parseInt(a.harga.replace(/\D/g, ''));
             return 0;
         });
+    let userName;
 
 
 </script>
@@ -167,27 +195,28 @@
 
         <!-- Desktop menu -->
         <nav class="hidden md:flex items-center space-x-6 text-base font-medium text-white">
-            <a href="/project-baru-pzn/dashboard    " class="hover:text-blue-300">Browse Products</a>
+            <a href="/project-baru-pzn/dashboard" class="hover:text-blue-300">Browse Products</a>
 
-            {#if isLoggedIn}
+            {#if user}
                 <div class="relative">
-                    <!-- User Icon -->
                     <button on:click={toggleDropdown} class="flex items-center bg-white rounded-full">
                         <img src="https://cdn-icons-png.flaticon.com/128/456/456212.png" alt="User" class="w-10 h-10 rounded-full border-2 border-white" />
                     </button>
 
-                    <!-- Dropdown Menu -->
-                    <div use:clickOutside class={`absolute right-0 mt-3 w-60 bg-white rounded-xl shadow-lg transform transition-all duration-300 ease-in-out origin-top-right ${isDropdownOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'}`}>
-                        <div class="px-6 py-4 border-b border-gray-200">
-                            <p class="text-base font-semibold text-gray-800">Hi, {userName}</p>
+                    {#if isDropdownOpen}
+                        <div use:clickOutside on:click_outside={() => (isDropdownOpen = false)}
+                             class="absolute right-0 mt-3 w-60 bg-white rounded-xl shadow-lg transform transition-all duration-300 ease-in-out origin-top-right scale-100 opacity-100">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <p class="text-base font-semibold text-gray-800">Hi, {user.name}</p>
+                            </div>
+                            <a href="/project-baru-pzn/profile"
+                               class="block px-6 py-3 text-base hover:bg-gray-100 text-gray-700 font-medium">Edit Profil</a>
+                            <button on:click={logout}
+                                    class="block w-full text-left px-6 py-3 text-base hover:bg-gray-100 text-red-600 font-medium">
+                                Logout
+                            </button>
                         </div>
-                        <a href="/project-baru-pzn/profile"
-                           class="block px-6 py-3 text-base hover:bg-gray-100 text-gray-700 font-medium">Edit Profil</a>
-                        <button on:click={() => {isLoggedIn = false; window.location.href = "/project-baru-pzn/login";}}
-                                class="block w-full text-left px-6 py-3 text-base hover:bg-gray-100 text-red-600 font-medium">
-                            Logout
-                        </button>
-                    </div>
+                    {/if}
                 </div>
             {:else}
                 <a href="/project-baru-pzn/login" class="hover:text-blue-300">Log In</a>
@@ -201,15 +230,15 @@
 
     <!-- Mobile Menu -->
     <div class={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-		isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-	}`}>
+        isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+    }`}>
         <div class="px-4 pt-2 pb-4 bg-blue-900 shadow space-y-2 text-base font-medium text-white">
-            <a href="/project-baru-pzn/dasboard" class="block py-2 px-2 rounded hover:bg-blue-800">Browse Products</a>
+            <a href="/project-baru-pzn/dashboard" class="block py-2 px-2 rounded hover:bg-blue-800">Browse Products</a>
 
-            {#if isLoggedIn}
-                <span class="block px-2">Hi, {userName}</span>
+            {#if user}
+                <span class="block px-2">Hi, {user.name}</span>
                 <a href="/project-baru-pzn/profile" class="block py-2 px-2 hover:bg-blue-800">Edit Profil</a>
-                <button class="block w-full text-left py-2 px-2 hover:bg-blue-800">Logout</button>
+                <button on:click={logout} class="block w-full text-left py-2 px-2 hover:bg-blue-800">Logout</button>
             {:else}
                 <a href="/project-baru-pzn/login" class="block py-2 px-2 rounded hover:bg-blue-800">Log In</a>
                 <a href="/project-baru-pzn/signup" class="block py-2 px-2 rounded hover:bg-blue-800">Sign Up</a>

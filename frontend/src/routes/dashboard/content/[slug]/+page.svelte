@@ -61,10 +61,13 @@
             <img src="https://cdn-icons-png.flaticon.com/128/1250/1250678.png" alt="Back" class="w-6 h-6" />
         </a>
 
-        <button class="md:hidden text-white" on:click={() => isMobileMenuOpen = !isMobileMenuOpen}>
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
+        <!-- Mobile user icon toggle -->
+        <button
+                class="md:hidden flex items-center bg-white rounded-full focus:outline-none"
+                on:click={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+                aria-label="User menu"
+        >
+            <img src="https://cdn-icons-png.flaticon.com/128/456/456212.png" alt="User" class="w-10 h-10 rounded-full border-2 border-white" />
         </button>
 
         <!-- Desktop menu -->
@@ -95,9 +98,9 @@
     <div class={`md:hidden overflow-hidden transition-all duration-300 ${isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
         <div class="px-4 pt-2 pb-4 bg-blue-900 shadow text-white">
             {#if isLoggedIn}
-                <span class="block px-2">Hi, {userName}</span>
-                <a href="/project-baru-pzn/profile" class="block py-2 px-2 hover:bg-blue-800">Edit Profil</a>
-                <button class="block w-full text-left py-2 px-2 hover:bg-blue-800">Logout</button>
+                <span class="block px-2 font-semibold">Hi, {userName}</span>
+                <a href="/project-baru-pzn/profile" class="block py-2 px-2 font-semibold hover:bg-blue-800">Edit Profil</a>
+                <button class="block w-full text-left font-semibold py-2 px-2 hover:bg-blue-800">Logout</button>
             {:else}
                 <a href="/project-baru-pzn/login" class="block py-2 px-2 hover:bg-blue-800">Log In</a>
                 <a href="/project-baru-pzn/signup" class="block py-2 px-2 hover:bg-blue-800">Sign Up</a>
@@ -111,24 +114,30 @@
 
     <!-- Sidebar -->
     <aside class="fixed top-12 left-0 h-screen w-full max-w-xs bg-white shadow-xl px-6 py-10 hidden lg:flex flex-col">
-        <div class="mb-8">
-            <img
-                    src={currentProduk.thumbnail}
-                    alt={currentProduk.judul}
-                    class="w-full mx-auto rounded-lg mb-6 shadow"
-            />
-            <h2 class="text-xl font-semibold mb-3">{currentProduk.judul}</h2>
+        {#if currentProduk}
+            <div class="mb-8">
+                <img
+                        src={currentProduk.thumbnail}
+                        alt={currentProduk.judul}
+                        class="w-full mx-auto rounded-lg mb-6 shadow"
+                />
+                <h2 class="text-xl font-semibold mb-3">{currentProduk.judul}</h2>
 
-            <div class="w-full h-2 bg-gray-200 rounded-full mb-2">
-                <div
-                        class="h-2 bg-red-500 rounded-full transition-all duration-500"
-                        style="width: {progress}%"
-                ></div>
+                <div class="w-full h-2 bg-gray-200 rounded-full mb-2">
+                    <div
+                            class="h-2 bg-red-500 rounded-full transition-all duration-500"
+                            style="width: {progress}%"
+                    ></div>
+                </div>
+                <p class="text-sm text-gray-600 font-normal">{progress}% COMPLETE</p>
             </div>
-            <p class="text-sm text-gray-600 font-normal">{progress}% COMPLETE</p>
-        </div>
+        {:else}
+            <div class="text-center text-red-600 font-semibold">
+                Produk tidak ditemukan.
+            </div>
+        {/if}
 
-        <nav class="space-y-3 text-lg font-normal">
+        <nav class="space-y-3 text-lg font-normal mt-4">
             <a
                     class="flex items-center gap-2 px-4 py-2 rounded-lg transition block cursor-pointer {activeTab === 'curriculum' ? 'bg-gray-100 text-blue-600' : 'text-gray-900'}"
                     on:click={() => (activeTab = 'curriculum')}
@@ -138,16 +147,14 @@
             </a>
 
             <a
-                    class="flex items-center gap-2 px-4 py-2 rounded-lg transition block cursor-pointer {activeTab === 'instructor' ? 'bg-gray-100 text-blue-600' : 'text-gray-900'}"
+                    class="flex items-center gap-2 px-4 py-2 rounded-lg transition cursor-pointer {activeTab === 'instructor' ? 'bg-gray-100 text-blue-600' : 'text-gray-900'}"
                     on:click={() => (activeTab = 'instructor')}
             >
                 <img src="https://cdn-icons-png.flaticon.com/128/17701/17701286.png" alt="Instructor Icon" class="w-5 h-5" />
                 Your Instructor
             </a>
         </nav>
-
     </aside>
-
 
     <!-- Main Content -->
     <main class="col-span-2 px-4 sm:px-8 py-12">

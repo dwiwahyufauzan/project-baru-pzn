@@ -119,16 +119,13 @@
             <a href="/project-baru-pzn/dashboard" class="text-lg font-semibold text-white">Programmer Zaman Now</a>
         </div>
 
-        <!-- Mobile toggle -->
+        <!-- Mobile user icon toggle -->
         <button
-                class="md:hidden text-white focus:outline-none"
+                class="md:hidden flex items-center bg-white rounded-full focus:outline-none"
                 on:click={() => (isMobileMenuOpen = !isMobileMenuOpen)}
-                aria-label="Toggle menu"
+                aria-label="User menu"
         >
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-                 stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
+            <img src="https://cdn-icons-png.flaticon.com/128/456/456212.png" alt="User" class="w-10 h-10 rounded-full border-2 border-white" />
         </button>
 
         <!-- Desktop menu -->
